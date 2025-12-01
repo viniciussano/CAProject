@@ -28,49 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("101");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("104");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("203");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("207");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Single Room", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4});
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("102");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("105");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("204");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("205");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Double Room", new System.Windows.Forms.TreeNode[] {
-            treeNode6,
-            treeNode7,
-            treeNode8,
-            treeNode9});
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("103");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("107");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("201");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("206");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Twin Room", new System.Windows.Forms.TreeNode[] {
-            treeNode11,
-            treeNode12,
-            treeNode13,
-            treeNode14});
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("106");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("202");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Family Room", new System.Windows.Forms.TreeNode[] {
-            treeNode16,
-            treeNode17});
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Rooms", new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode10,
-            treeNode15,
-            treeNode18});
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.listBox1 = new System.Windows.Forms.ListBox();
-            this.createReservation = new System.Windows.Forms.Button();
-            this.deleteReservation = new System.Windows.Forms.Button();
-            this.updateReservation = new System.Windows.Forms.Button();
-            this.searchReservation = new System.Windows.Forms.Button();
+            this.createReservationButton = new System.Windows.Forms.Button();
+            this.deleteReservationButton = new System.Windows.Forms.Button();
+            this.updateReservationButton = new System.Windows.Forms.Button();
+            this.searchReservationButton = new System.Windows.Forms.Button();
             this.guestName = new System.Windows.Forms.TextBox();
             this.guestEmail = new System.Windows.Forms.TextBox();
             this.phoneNumber = new System.Windows.Forms.TextBox();
@@ -92,7 +56,13 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.totalRate = new System.Windows.Forms.TextBox();
-            this.roomSelector = new System.Windows.Forms.TreeView();
+            this.searchReservation = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.selectRoomNo = new System.Windows.Forms.ListBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.button1 = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -113,67 +83,70 @@
             this.listBox1.Size = new System.Drawing.Size(1820, 277);
             this.listBox1.TabIndex = 1;
             // 
-            // createReservation
+            // createReservationButton
             // 
-            this.createReservation.Location = new System.Drawing.Point(1183, 152);
-            this.createReservation.Name = "createReservation";
-            this.createReservation.Size = new System.Drawing.Size(147, 23);
-            this.createReservation.TabIndex = 2;
-            this.createReservation.Text = "Create Reservation";
-            this.createReservation.UseVisualStyleBackColor = true;
-            this.createReservation.Click += new System.EventHandler(this.createReservation_Click);
+            this.createReservationButton.Location = new System.Drawing.Point(494, 668);
+            this.createReservationButton.Name = "createReservationButton";
+            this.createReservationButton.Size = new System.Drawing.Size(147, 23);
+            this.createReservationButton.TabIndex = 2;
+            this.createReservationButton.Text = "Create Reservation";
+            this.createReservationButton.UseVisualStyleBackColor = true;
+            this.createReservationButton.Click += new System.EventHandler(this.createReservationButton_Click);
             // 
-            // deleteReservation
+            // deleteReservationButton
             // 
-            this.deleteReservation.Location = new System.Drawing.Point(1183, 214);
-            this.deleteReservation.Name = "deleteReservation";
-            this.deleteReservation.Size = new System.Drawing.Size(147, 23);
-            this.deleteReservation.TabIndex = 3;
-            this.deleteReservation.Text = "Delete Reservation";
-            this.deleteReservation.UseVisualStyleBackColor = true;
+            this.deleteReservationButton.Location = new System.Drawing.Point(1299, 284);
+            this.deleteReservationButton.Name = "deleteReservationButton";
+            this.deleteReservationButton.Size = new System.Drawing.Size(147, 23);
+            this.deleteReservationButton.TabIndex = 3;
+            this.deleteReservationButton.Text = "Delete Reservation";
+            this.deleteReservationButton.UseVisualStyleBackColor = true;
+            this.deleteReservationButton.Click += new System.EventHandler(this.deleteReservationButton_Click);
             // 
-            // updateReservation
+            // updateReservationButton
             // 
-            this.updateReservation.Location = new System.Drawing.Point(1183, 283);
-            this.updateReservation.Name = "updateReservation";
-            this.updateReservation.Size = new System.Drawing.Size(147, 23);
-            this.updateReservation.TabIndex = 4;
-            this.updateReservation.Text = "Update Reservation";
-            this.updateReservation.UseVisualStyleBackColor = true;
+            this.updateReservationButton.Location = new System.Drawing.Point(1299, 230);
+            this.updateReservationButton.Name = "updateReservationButton";
+            this.updateReservationButton.Size = new System.Drawing.Size(147, 23);
+            this.updateReservationButton.TabIndex = 4;
+            this.updateReservationButton.Text = "Update Reservation";
+            this.updateReservationButton.UseVisualStyleBackColor = true;
+            this.updateReservationButton.Click += new System.EventHandler(this.updateReservationButton_Click);
             // 
-            // searchReservation
+            // searchReservationButton
             // 
-            this.searchReservation.Location = new System.Drawing.Point(1183, 353);
-            this.searchReservation.Name = "searchReservation";
-            this.searchReservation.Size = new System.Drawing.Size(147, 23);
-            this.searchReservation.TabIndex = 5;
-            this.searchReservation.Text = "Search Reservation";
-            this.searchReservation.UseVisualStyleBackColor = true;
+            this.searchReservationButton.Location = new System.Drawing.Point(1299, 176);
+            this.searchReservationButton.Name = "searchReservationButton";
+            this.searchReservationButton.Size = new System.Drawing.Size(147, 23);
+            this.searchReservationButton.TabIndex = 5;
+            this.searchReservationButton.Text = "Search Reservation";
+            this.searchReservationButton.UseVisualStyleBackColor = true;
+            this.searchReservationButton.Click += new System.EventHandler(this.searchReservationButton_Click);
             // 
             // guestName
             // 
-            this.guestName.Location = new System.Drawing.Point(493, 162);
+            this.guestName.Location = new System.Drawing.Point(494, 128);
             this.guestName.Name = "guestName";
             this.guestName.Size = new System.Drawing.Size(362, 20);
             this.guestName.TabIndex = 6;
             // 
             // guestEmail
             // 
-            this.guestEmail.Location = new System.Drawing.Point(493, 227);
+            this.guestEmail.Location = new System.Drawing.Point(494, 193);
             this.guestEmail.Name = "guestEmail";
             this.guestEmail.Size = new System.Drawing.Size(362, 20);
             this.guestEmail.TabIndex = 7;
             // 
             // phoneNumber
             // 
-            this.phoneNumber.Location = new System.Drawing.Point(493, 300);
+            this.phoneNumber.Location = new System.Drawing.Point(494, 266);
             this.phoneNumber.Name = "phoneNumber";
             this.phoneNumber.Size = new System.Drawing.Size(362, 20);
             this.phoneNumber.TabIndex = 8;
             // 
             // address
             // 
-            this.address.Location = new System.Drawing.Point(493, 360);
+            this.address.Location = new System.Drawing.Point(494, 326);
             this.address.Name = "address";
             this.address.Size = new System.Drawing.Size(362, 20);
             this.address.TabIndex = 9;
@@ -183,7 +156,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(413, 234);
+            this.label3.Location = new System.Drawing.Point(415, 200);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(32, 13);
             this.label3.TabIndex = 11;
@@ -192,7 +165,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(367, 303);
+            this.label2.Location = new System.Drawing.Point(368, 269);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(78, 13);
             this.label2.TabIndex = 12;
@@ -201,7 +174,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(400, 363);
+            this.label4.Location = new System.Drawing.Point(401, 329);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(45, 13);
             this.label4.TabIndex = 13;
@@ -210,7 +183,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(370, 471);
+            this.label5.Location = new System.Drawing.Point(371, 437);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(75, 13);
             this.label5.TabIndex = 14;
@@ -219,16 +192,18 @@
             // 
             // checkin
             // 
-            this.checkin.Location = new System.Drawing.Point(493, 471);
+            this.checkin.Location = new System.Drawing.Point(494, 437);
             this.checkin.MaxDate = new System.DateTime(2028, 12, 31, 0, 0, 0, 0);
-            this.checkin.MinDate = new System.DateTime(2025, 10, 24, 0, 0, 0, 0);
+            this.checkin.MinDate = new System.DateTime(2025, 12, 1, 0, 0, 0, 0);
             this.checkin.Name = "checkin";
             this.checkin.Size = new System.Drawing.Size(200, 20);
             this.checkin.TabIndex = 15;
             // 
             // checkout
             // 
-            this.checkout.Location = new System.Drawing.Point(493, 535);
+            this.checkout.Location = new System.Drawing.Point(494, 500);
+            this.checkout.MaxDate = new System.DateTime(2028, 12, 31, 0, 0, 0, 0);
+            this.checkout.MinDate = new System.DateTime(2025, 12, 1, 0, 0, 0, 0);
             this.checkout.Name = "checkout";
             this.checkout.Size = new System.Drawing.Size(200, 20);
             this.checkout.TabIndex = 16;
@@ -236,7 +211,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(363, 535);
+            this.label6.Location = new System.Drawing.Point(364, 500);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(82, 13);
             this.label6.TabIndex = 17;
@@ -245,7 +220,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(330, 419);
+            this.label7.Location = new System.Drawing.Point(332, 385);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(115, 13);
             this.label7.TabIndex = 18;
@@ -255,7 +230,7 @@
             // 
             this.one.AutoSize = true;
             this.one.Checked = true;
-            this.one.Location = new System.Drawing.Point(493, 417);
+            this.one.Location = new System.Drawing.Point(494, 383);
             this.one.Name = "one";
             this.one.Size = new System.Drawing.Size(31, 17);
             this.one.TabIndex = 19;
@@ -266,7 +241,7 @@
             // two
             // 
             this.two.AutoSize = true;
-            this.two.Location = new System.Drawing.Point(540, 417);
+            this.two.Location = new System.Drawing.Point(542, 383);
             this.two.Name = "two";
             this.two.Size = new System.Drawing.Size(31, 17);
             this.two.TabIndex = 20;
@@ -276,7 +251,7 @@
             // three
             // 
             this.three.AutoSize = true;
-            this.three.Location = new System.Drawing.Point(589, 417);
+            this.three.Location = new System.Drawing.Point(590, 383);
             this.three.Name = "three";
             this.three.Size = new System.Drawing.Size(31, 17);
             this.three.TabIndex = 21;
@@ -286,7 +261,7 @@
             // four
             // 
             this.four.AutoSize = true;
-            this.four.Location = new System.Drawing.Point(638, 417);
+            this.four.Location = new System.Drawing.Point(640, 383);
             this.four.Name = "four";
             this.four.Size = new System.Drawing.Size(31, 17);
             this.four.TabIndex = 22;
@@ -296,7 +271,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(379, 167);
+            this.label8.Location = new System.Drawing.Point(380, 133);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(66, 13);
             this.label8.TabIndex = 23;
@@ -308,16 +283,17 @@
             this.roomType.Items.Add("Double Room");
             this.roomType.Items.Add("Triple Room");
             this.roomType.Items.Add("Family Room");
-            this.roomType.Location = new System.Drawing.Point(493, 595);
+            this.roomType.Location = new System.Drawing.Point(494, 561);
             this.roomType.Name = "roomType";
             this.roomType.Size = new System.Drawing.Size(120, 20);
             this.roomType.TabIndex = 24;
             this.roomType.Text = "Choose Room";
+            this.roomType.SelectedItemChanged += new System.EventHandler(this.roomType_SelectedItemChanged);
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(359, 597);
+            this.label9.Location = new System.Drawing.Point(361, 563);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(86, 13);
             this.label9.TabIndex = 25;
@@ -326,7 +302,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(388, 647);
+            this.label10.Location = new System.Drawing.Point(389, 613);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(57, 13);
             this.label10.TabIndex = 26;
@@ -334,64 +310,68 @@
             // 
             // totalRate
             // 
-            this.totalRate.Location = new System.Drawing.Point(493, 647);
+            this.totalRate.Location = new System.Drawing.Point(494, 613);
             this.totalRate.Name = "totalRate";
             this.totalRate.Size = new System.Drawing.Size(120, 20);
             this.totalRate.TabIndex = 27;
             // 
-            // roomSelector
+            // searchReservation
             // 
-            this.roomSelector.Location = new System.Drawing.Point(882, 426);
-            this.roomSelector.Name = "roomSelector";
-            treeNode1.Name = "roomNo101";
-            treeNode1.Text = "101";
-            treeNode2.Name = "Node17";
-            treeNode2.Text = "104";
-            treeNode3.Name = "Node18";
-            treeNode3.Text = "203";
-            treeNode4.Name = "Node19";
-            treeNode4.Text = "207";
-            treeNode5.Name = "singleRoom";
-            treeNode5.Text = "Single Room";
-            treeNode6.Name = "roomNo102";
-            treeNode6.Text = "102";
-            treeNode7.Name = "Node14";
-            treeNode7.Text = "105";
-            treeNode8.Name = "Node15";
-            treeNode8.Text = "204";
-            treeNode9.Name = "Node16";
-            treeNode9.Text = "205";
-            treeNode10.Name = "doubleRoom";
-            treeNode10.Text = "Double Room";
-            treeNode11.Name = "roomNo103";
-            treeNode11.Text = "103";
-            treeNode12.Name = "Node11";
-            treeNode12.Text = "107";
-            treeNode13.Name = "Node12";
-            treeNode13.Text = "201";
-            treeNode14.Name = "Node13";
-            treeNode14.Text = "206";
-            treeNode15.Name = "twinRoom";
-            treeNode15.Text = "Twin Room";
-            treeNode16.Name = "roomNo106";
-            treeNode16.Text = "106";
-            treeNode17.Name = "roomNo202";
-            treeNode17.Text = "202";
-            treeNode18.Name = "familyRoom";
-            treeNode18.Text = "Family Room";
-            treeNode19.Name = "rooms";
-            treeNode19.Text = "Rooms";
-            this.roomSelector.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode19});
-            this.roomSelector.Size = new System.Drawing.Size(350, 241);
-            this.roomSelector.TabIndex = 28;
+            this.searchReservation.Location = new System.Drawing.Point(1257, 128);
+            this.searchReservation.Name = "searchReservation";
+            this.searchReservation.Size = new System.Drawing.Size(262, 20);
+            this.searchReservation.TabIndex = 29;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(1127, 131);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(101, 13);
+            this.label11.TabIndex = 30;
+            this.label11.Text = "Enter Guest\'s Name";
+            // 
+            // selectRoomNo
+            // 
+            this.selectRoomNo.FormattingEnabled = true;
+            this.selectRoomNo.Location = new System.Drawing.Point(783, 536);
+            this.selectRoomNo.Name = "selectRoomNo";
+            this.selectRoomNo.Size = new System.Drawing.Size(140, 95);
+            this.selectRoomNo.TabIndex = 31;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(794, 505);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(108, 13);
+            this.label12.TabIndex = 32;
+            this.label12.Text = "Select Room Number";
+            // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1340, 457);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(70, 63);
+            this.button1.TabIndex = 33;
+            this.button1.Text = "Close System";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1910, 1011);
-            this.Controls.Add(this.roomSelector);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.selectRoomNo);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.searchReservation);
             this.Controls.Add(this.totalRate);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
@@ -413,14 +393,16 @@
             this.Controls.Add(this.phoneNumber);
             this.Controls.Add(this.guestEmail);
             this.Controls.Add(this.guestName);
-            this.Controls.Add(this.searchReservation);
-            this.Controls.Add(this.updateReservation);
-            this.Controls.Add(this.deleteReservation);
-            this.Controls.Add(this.createReservation);
+            this.Controls.Add(this.searchReservationButton);
+            this.Controls.Add(this.updateReservationButton);
+            this.Controls.Add(this.deleteReservationButton);
+            this.Controls.Add(this.createReservationButton);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
             this.Text = "Hotel Reservation System";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -430,10 +412,10 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.Button createReservation;
-        private System.Windows.Forms.Button deleteReservation;
-        private System.Windows.Forms.Button updateReservation;
-        private System.Windows.Forms.Button searchReservation;
+        private System.Windows.Forms.Button createReservationButton;
+        private System.Windows.Forms.Button deleteReservationButton;
+        private System.Windows.Forms.Button updateReservationButton;
+        private System.Windows.Forms.Button searchReservationButton;
         private System.Windows.Forms.TextBox guestName;
         private System.Windows.Forms.TextBox guestEmail;
         private System.Windows.Forms.TextBox phoneNumber;
@@ -455,7 +437,12 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox totalRate;
-        private System.Windows.Forms.TreeView roomSelector;
+        private System.Windows.Forms.TextBox searchReservation;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ListBox selectRoomNo;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
+        private System.Windows.Forms.Button button1;
     }
 }
 
