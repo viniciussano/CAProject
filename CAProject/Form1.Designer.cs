@@ -61,7 +61,11 @@
             this.selectRoomNo = new System.Windows.Forms.ListBox();
             this.label12 = new System.Windows.Forms.Label();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.button1 = new System.Windows.Forms.Button();
+            this.closeButton = new System.Windows.Forms.Button();
+            this.listAllReservationsButton = new System.Windows.Forms.Button();
+            this.sortByCheckInButton = new System.Windows.Forms.Button();
+            this.sortByNameButton = new System.Windows.Forms.Button();
+            this.clearSearchButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -194,7 +198,7 @@
             // 
             this.checkin.Location = new System.Drawing.Point(494, 437);
             this.checkin.MaxDate = new System.DateTime(2028, 12, 31, 0, 0, 0, 0);
-            this.checkin.MinDate = new System.DateTime(2025, 12, 1, 0, 0, 0, 0);
+            this.checkin.MinDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
             this.checkin.Name = "checkin";
             this.checkin.Size = new System.Drawing.Size(200, 20);
             this.checkin.TabIndex = 15;
@@ -203,7 +207,7 @@
             // 
             this.checkout.Location = new System.Drawing.Point(494, 500);
             this.checkout.MaxDate = new System.DateTime(2028, 12, 31, 0, 0, 0, 0);
-            this.checkout.MinDate = new System.DateTime(2025, 12, 1, 0, 0, 0, 0);
+            this.checkout.MinDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
             this.checkout.Name = "checkout";
             this.checkout.Size = new System.Drawing.Size(200, 20);
             this.checkout.TabIndex = 16;
@@ -352,22 +356,67 @@
             // 
             this.errorProvider1.ContainerControl = this;
             // 
-            // button1
+            // closeButton
             // 
-            this.button1.Location = new System.Drawing.Point(1340, 457);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(70, 63);
-            this.button1.TabIndex = 33;
-            this.button1.Text = "Close System";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.closeButton.CausesValidation = false;
+            this.closeButton.Location = new System.Drawing.Point(1664, 570);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(70, 63);
+            this.closeButton.TabIndex = 33;
+            this.closeButton.Text = "Close System";
+            this.closeButton.UseVisualStyleBackColor = true;
+            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            // 
+            // listAllReservationsButton
+            // 
+            this.listAllReservationsButton.Location = new System.Drawing.Point(1299, 383);
+            this.listAllReservationsButton.Name = "listAllReservationsButton";
+            this.listAllReservationsButton.Size = new System.Drawing.Size(153, 40);
+            this.listAllReservationsButton.TabIndex = 34;
+            this.listAllReservationsButton.Text = "List All Reservations";
+            this.listAllReservationsButton.UseVisualStyleBackColor = true;
+            this.listAllReservationsButton.Click += new System.EventHandler(this.listAllReservationsButton_Click);
+            // 
+            // sortByCheckInButton
+            // 
+            this.sortByCheckInButton.Location = new System.Drawing.Point(1317, 543);
+            this.sortByCheckInButton.Name = "sortByCheckInButton";
+            this.sortByCheckInButton.Size = new System.Drawing.Size(114, 53);
+            this.sortByCheckInButton.TabIndex = 35;
+            this.sortByCheckInButton.Text = "Sort by Check-in Date";
+            this.sortByCheckInButton.UseVisualStyleBackColor = true;
+            this.sortByCheckInButton.Click += new System.EventHandler(this.sortByCheckInButton_Click);
+            // 
+            // sortByNameButton
+            // 
+            this.sortByNameButton.Location = new System.Drawing.Point(1317, 455);
+            this.sortByNameButton.Name = "sortByNameButton";
+            this.sortByNameButton.Size = new System.Drawing.Size(114, 63);
+            this.sortByNameButton.TabIndex = 36;
+            this.sortByNameButton.Text = "Sort By Name";
+            this.sortByNameButton.UseVisualStyleBackColor = true;
+            this.sortByNameButton.Click += new System.EventHandler(this.sortByNameButton_Click);
+            // 
+            // clearSearchButton
+            // 
+            this.clearSearchButton.Location = new System.Drawing.Point(1507, 176);
+            this.clearSearchButton.Name = "clearSearchButton";
+            this.clearSearchButton.Size = new System.Drawing.Size(141, 23);
+            this.clearSearchButton.TabIndex = 37;
+            this.clearSearchButton.Text = "Clear Search";
+            this.clearSearchButton.UseVisualStyleBackColor = true;
+            this.clearSearchButton.Click += new System.EventHandler(this.clearSearchButton_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1910, 1011);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.clearSearchButton);
+            this.Controls.Add(this.sortByNameButton);
+            this.Controls.Add(this.sortByCheckInButton);
+            this.Controls.Add(this.listAllReservationsButton);
+            this.Controls.Add(this.closeButton);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.selectRoomNo);
             this.Controls.Add(this.label11);
@@ -401,7 +450,7 @@
             this.Controls.Add(this.label1);
             this.Name = "Form1";
             this.Text = "Hotel Reservation System";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -442,7 +491,11 @@
         private System.Windows.Forms.ListBox selectRoomNo;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.ErrorProvider errorProvider1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button closeButton;
+        private System.Windows.Forms.Button listAllReservationsButton;
+        private System.Windows.Forms.Button sortByCheckInButton;
+        private System.Windows.Forms.Button sortByNameButton;
+        private System.Windows.Forms.Button clearSearchButton;
     }
 }
 

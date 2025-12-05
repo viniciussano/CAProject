@@ -20,7 +20,7 @@ namespace CAProject
         public Reservation(Guest guest, int roomNumber, DateTime checkInDate, DateTime checkOutDate, int totalNoOfGuests, decimal totalPrice)
         {
             Guest = guest;
-            GuestId = guest.Id;
+            GuestId = guest.GuestID;
             RoomNumber = roomNumber;
             CheckInDate = checkInDate;
             CheckOutDate = checkOutDate;
@@ -29,7 +29,7 @@ namespace CAProject
         }
         public override string ToString()
         {
-            return $"Reservation ID: {ReservationID}, GuestID: {GuestId}, Guest Name: {Guest.Name} Room: {RoomNumber}, Check-In: {CheckInDate.ToShortDateString()}, Check-Out: {CheckOutDate.ToShortDateString()}, Total Number of Guests: {TotalNoOfGuests}, Total Price: {TotalPrice}";
+            return $"Reservation ID: {ReservationID}, GuestID: {GuestId}, Guest Name: {Guest.Name}, Room: {RoomNumber}, Check-In: {CheckInDate.ToShortDateString()}, Check-Out: {CheckOutDate.ToShortDateString()}, Total Number of Guests: {TotalNoOfGuests}, Total Price: {TotalPrice}";
         }
     }
 }

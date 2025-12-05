@@ -21,78 +21,7 @@ namespace CAProject
             DatabaseHotel.Initialize();
 
             roomType.SelectedItemChanged += roomType_SelectedItemChanged;
-           
-            guestName.Validating += guestName_Validating;
-            guestEmail.Validating += guestEmail_Validating;
-            phoneNumber.Validating += phoneNumber_Validating;
-            address.Validating += address_Validating;
 
-        }
-        private void guestName_Validating(object sender, CancelEventArgs e)
-        {
-            string pattern = @"^[A-Za-z]{3,}(?: [A-Za-z]{3,})+$";
-
-            if (!Regex.IsMatch(guestName.Text.Trim(), pattern))
-            {
-                e.Cancel = true;
-                errorProvider1.SetError(
-                    guestName,
-                    "Enter first and last name (e.g. John Smith)."
-                );
-            }
-            else
-            {
-                errorProvider1.SetError(guestName, "");
-            }
-        }
-        private void guestEmail_Validating(object sender, CancelEventArgs e)
-        {
-            string pattern = @"^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$";
-
-            if (!Regex.IsMatch(guestEmail.Text, pattern))
-            {
-                e.Cancel = true;
-                errorProvider1.SetError(guestEmail, "Please enter a valid email address.");
-            }
-            else
-            {
-                errorProvider1.SetError(guestEmail, "");
-            }
-        }
-        private void phoneNumber_Validating(object sender, CancelEventArgs e)
-        {
-            string pattern = @"^\+\d{1,3} \d{8,15}$";
-
-            if (!Regex.IsMatch(phoneNumber.Text.Trim(), pattern))
-            {
-                e.Cancel = true;
-                errorProvider1.SetError(
-                    phoneNumber,
-                    "Phone format must contain: + country code and number (e.g. +353 875570000)"
-                );
-            }
-            else
-            {
-                errorProvider1.SetError(phoneNumber, "");
-            }
-        }
-        private void address_Validating(object sender, CancelEventArgs e)
-        {
-            string pattern = @"^[A-Za-z0-9 ]+$";
-
-            if (string.IsNullOrWhiteSpace(address.Text) ||
-                !Regex.IsMatch(address.Text.Trim(), pattern))
-            {
-                e.Cancel = true;
-                errorProvider1.SetError(
-                    address,
-                    "Address is required and may only contain letters, numbers, and spaces."
-                );
-            }
-            else
-            {
-                errorProvider1.SetError(address, "");
-            }
         }
 
         private void address_TextChanged(object sender, EventArgs e)
@@ -114,7 +43,7 @@ namespace CAProject
             Guest newGuest = new Guest(name, email, phone, addr);
 
             int guestId = DatabaseHotel.AddGuest(newGuest);
-            newGuest.Id = guestId;
+            newGuest.GuestID = guestId;
             DatabaseHotel.PrintAllGuests();
 
             int noOfGuests;
@@ -139,11 +68,7 @@ namespace CAProject
             DateTime checkIn = checkin.Value;
             DateTime checkOut = checkout.Value;
 
-            if (roomType.SelectedItem == null)
-            {
-                MessageBox.Show("Please select a room type.");
-                return;
-            }
+
             string selectedRoomType = roomType.SelectedItem.ToString();
 
             string selectedRoomNumber = selectRoomNo.SelectedItem.ToString();
@@ -207,6 +132,8 @@ namespace CAProject
             }
 
             List<Reservation> reservations = DatabaseHotel.GetAllReservations();
+
+            SortReservationsById.InsertionSortByReservationID(reservations);
 
             BinarySearchById searcher = new BinarySearchById();
             var foundReservation = searcher.BinarySearch(reservations, searchid);
@@ -300,6 +227,9 @@ namespace CAProject
                 return;
             }
 
+            if (!ValidateForm())
+                return;
+
             // Cast selected reservation
             var selectedReservation = (Reservation)listBox1.SelectedItem;
 
@@ -362,6 +292,67 @@ namespace CAProject
 
         private bool ValidateForm()
         {
+            string namePattern = @"^[A-Za-z]{3,}(?: [A-Za-z]{3,})+$";
+
+            if (!Regex.IsMatch(guestName.Text.Trim(), namePattern))
+            {
+                errorProvider1.SetError(
+                    guestName,
+                    "Enter first and last name with at least 3 letters each (e.g. John Smith)."
+                );
+                return false;   // ✅ STOP saving
+            }
+            else
+            {
+                errorProvider1.SetError(guestName, "");
+            }
+
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$";
+
+            if (!Regex.IsMatch(guestEmail.Text.Trim(), emailPattern))
+            {
+                errorProvider1.SetError(
+                    guestEmail,
+                    "Please enter a valid email address (e.g. name@email.com)."
+                );
+                return false;
+            }
+            else
+            {
+                errorProvider1.SetError(guestEmail, "");
+            }
+
+            string phoneNumberPattern = @"^\+\d{1,3} \d{8,15}$";
+
+            if (!Regex.IsMatch(phoneNumber.Text.Trim(), phoneNumberPattern))
+            {
+                errorProvider1.SetError(
+                    phoneNumber,
+                    "Phone format must be: +CCC NNNNNNNN (e.g. +353 875570000)"
+                );
+                return false;
+            }
+            else
+            {
+                errorProvider1.SetError(phoneNumber, "");
+            }
+
+            string addressPattern = @"^[A-Za-z0-9 ]+$";
+
+            if (string.IsNullOrWhiteSpace(address.Text) ||
+                !Regex.IsMatch(address.Text.Trim(), addressPattern))
+            {
+                errorProvider1.SetError(
+                    address,
+                    "Address is required and may only contain letters, numbers, and spaces."
+                );
+                return false;
+            }
+            else
+            {
+                errorProvider1.SetError(address, "");
+            }
+
             if (!ValidateChildren())
                 return false;
 
@@ -383,6 +374,19 @@ namespace CAProject
                 return false;
             }
 
+            // ✅ Prevent creating reservations in the past
+            if (checkin.Value < DateTime.Today)
+            {
+                MessageBox.Show("Check-in date cannot be in the past.");
+                return false;
+            }
+
+            if (checkout.Value < DateTime.Today)
+            {
+                MessageBox.Show("Check-out date cannot be in the past.");
+                return false;
+            }
+
             if (!decimal.TryParse(totalRate.Text, out _))
             {
                 MessageBox.Show("Invalid total rate.");
@@ -392,14 +396,103 @@ namespace CAProject
             return true;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void closeButton_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void listAllReservationsButton_Click(object sender, EventArgs e)
         {
+            List<Reservation> reservations = DatabaseHotel.GetAllReservations();
 
+            listBox1.Items.Clear();
+
+            if (reservations == null || reservations.Count == 0)
+            {
+                MessageBox.Show("No reservations found.");
+                return;
+            }
+
+            listBox1.Items.Clear();
+
+            foreach (var reservation in reservations)
+            {
+                listBox1.Items.Add(reservation);
+            }
+
+            MessageBox.Show("All reservations loaded successfully.");
+
+        }
+
+        private void sortByCheckInButton_Click(object sender, EventArgs e)
+        {
+            // Get all reservations
+            List<Reservation> reservations = DatabaseHotel.GetAllReservations();
+
+            // Safety check
+            if (reservations == null || reservations.Count == 0)
+            {
+                MessageBox.Show("No reservations to sort.");
+                return;
+            }
+
+            // ✅ APPLY INSERTION SORT BY CHECK-IN DATE
+            SortReservationsByDate.InsertionSortByCheckInDate(reservations);
+
+            // Refresh ListBox
+            listBox1.Items.Clear();
+
+            foreach (var reservation in reservations)
+            {
+                listBox1.Items.Add(reservation);
+            }
+
+            MessageBox.Show("Reservations sorted by check-in date.");
+        }
+
+        private void sortByNameButton_Click(object sender, EventArgs e)
+        {
+            // Get all reservations
+            List<Reservation> reservations = DatabaseHotel.GetAllReservations();
+
+            // Safety check
+            if (reservations == null || reservations.Count == 0)
+            {
+                MessageBox.Show("No reservations to sort.");
+                return;
+            }
+
+            // ✅ Apply Bubble Sort
+            SortReservationsByName.BubbleSortByGuestName(reservations);
+
+            // Refresh ListBox
+            listBox1.Items.Clear();
+            foreach (var reservation in reservations)
+            {
+                listBox1.Items.Add(reservation);
+            }
+
+            MessageBox.Show("Reservations sorted by guest name (A–Z).");
+        }
+
+        private void clearSearchButton_Click(object sender, EventArgs e)
+        {
+            guestName.Text = string.Empty;
+            guestEmail.Text = string.Empty;
+            phoneNumber.Text = string.Empty;
+            address.Text = string.Empty;
+            one.Checked = true;
+            checkin.Value = DateTime.Today;
+            checkout.Value = DateTime.Today;
+            roomType.SelectedItem = null;
+            totalRate.Text = string.Empty;
+            listBox1.Items.Clear();
+            selectRoomNo.Items.Clear();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
