@@ -66,6 +66,7 @@
             this.sortByCheckInButton = new System.Windows.Forms.Button();
             this.sortByNameButton = new System.Windows.Forms.Button();
             this.clearSearchButton = new System.Windows.Forms.Button();
+            this.clearForm = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -154,8 +155,6 @@
             this.address.Name = "address";
             this.address.Size = new System.Drawing.Size(362, 20);
             this.address.TabIndex = 9;
-            this.address.Click += new System.EventHandler(this.address_TextChanged);
-            this.address.TextChanged += new System.EventHandler(this.address_TextChanged);
             // 
             // label3
             // 
@@ -192,7 +191,6 @@
             this.label5.Size = new System.Drawing.Size(75, 13);
             this.label5.TabIndex = 14;
             this.label5.Text = "Check-in Date";
-            this.label5.Click += new System.EventHandler(this.address_TextChanged);
             // 
             // checkin
             // 
@@ -329,24 +327,24 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(1127, 131);
+            this.label11.Location = new System.Drawing.Point(1102, 133);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(101, 13);
+            this.label11.Size = new System.Drawing.Size(132, 13);
             this.label11.TabIndex = 30;
-            this.label11.Text = "Enter Guest\'s Name";
+            this.label11.Text = "Enter Reservation Number";
             // 
             // selectRoomNo
             // 
             this.selectRoomNo.FormattingEnabled = true;
-            this.selectRoomNo.Location = new System.Drawing.Point(783, 536);
+            this.selectRoomNo.Location = new System.Drawing.Point(772, 512);
             this.selectRoomNo.Name = "selectRoomNo";
-            this.selectRoomNo.Size = new System.Drawing.Size(140, 95);
+            this.selectRoomNo.Size = new System.Drawing.Size(230, 121);
             this.selectRoomNo.TabIndex = 31;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(794, 505);
+            this.label12.Location = new System.Drawing.Point(824, 489);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(108, 13);
             this.label12.TabIndex = 32;
@@ -407,11 +405,22 @@
             this.clearSearchButton.UseVisualStyleBackColor = true;
             this.clearSearchButton.Click += new System.EventHandler(this.clearSearchButton_Click);
             // 
+            // clearForm
+            // 
+            this.clearForm.Location = new System.Drawing.Point(698, 668);
+            this.clearForm.Name = "clearForm";
+            this.clearForm.Size = new System.Drawing.Size(140, 23);
+            this.clearForm.TabIndex = 38;
+            this.clearForm.Text = "Clear Form";
+            this.clearForm.UseVisualStyleBackColor = true;
+            this.clearForm.Click += new System.EventHandler(this.clearForm_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1910, 1011);
+            this.Controls.Add(this.clearForm);
             this.Controls.Add(this.clearSearchButton);
             this.Controls.Add(this.sortByNameButton);
             this.Controls.Add(this.sortByCheckInButton);
@@ -450,7 +459,6 @@
             this.Controls.Add(this.label1);
             this.Name = "Form1";
             this.Text = "Hotel Reservation System";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -496,6 +504,7 @@
         private System.Windows.Forms.Button sortByCheckInButton;
         private System.Windows.Forms.Button sortByNameButton;
         private System.Windows.Forms.Button clearSearchButton;
+        private System.Windows.Forms.Button clearForm;
     }
 }
 

@@ -8,11 +8,9 @@ namespace CAProject
 {
     public class FamilyRoom : Room
     {
-        public bool AreInterconnectedRooms { get; set; }
-        public FamilyRoom(int roomNumber, decimal pricePerNight, bool isAvailable, bool areInterconnectedRooms)
-            : base(roomNumber, pricePerNight, isAvailable, 4)
-        {
-            AreInterconnectedRooms = areInterconnectedRooms;
+        public FamilyRoom(int number, decimal price, bool available, int capacity)
+                : base(number, price, available, capacity) 
+        { 
         }
         public override string GetRoomType()
         {
