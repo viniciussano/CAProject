@@ -63,6 +63,8 @@ namespace CAProject
             checkin.ValueChanged += (s, e) => UpdateTotalPrice();
             checkout.ValueChanged += (s, e) => UpdateTotalPrice();
 
+            listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
+
         }
 
         // Create Reservation
@@ -237,31 +239,35 @@ namespace CAProject
                     MessageBox.Show("Guest object is NULL inside this reservation.");
                     return;
                 }
+                //listBox1.Items.Add(foundReservation);
+                //guestName.Text = foundReservation.Guest.Name;
+                //guestEmail.Text = foundReservation.Guest.Email;
+                //phoneNumber.Text = foundReservation.Guest.PhoneNumber;
+                //address.Text = foundReservation.Guest.Address;
+                //if (foundReservation.TotalNoOfGuests == 1)
+                //{
+                //    one.Checked = true;
+                //}
+                //else if (foundReservation.TotalNoOfGuests == 2)
+                //{
+                //    two.Checked = true;
+                //}
+                //else if (foundReservation.TotalNoOfGuests == 3)
+                //{
+                //    three.Checked = true;
+                //}
+                //else
+                //{
+                //    four.Checked = true;
+                //}
+                //checkin.Value = foundReservation.CheckInDate;
+                //checkout.Value = foundReservation.CheckOutDate;
+                //selectRoomNo.Items.Add(foundReservation.RoomNumber.ToString());
+                //totalRate.Text = foundReservation.TotalPrice.ToString();\
                 listBox1.Items.Add(foundReservation);
-                guestName.Text = foundReservation.Guest.Name;
-                guestEmail.Text = foundReservation.Guest.Email;
-                phoneNumber.Text = foundReservation.Guest.PhoneNumber;
-                address.Text = foundReservation.Guest.Address;
-                if (foundReservation.TotalNoOfGuests == 1)
-                {
-                    one.Checked = true;
-                }
-                else if (foundReservation.TotalNoOfGuests == 2)
-                {
-                    two.Checked = true;
-                }
-                else if (foundReservation.TotalNoOfGuests == 3)
-                {
-                    three.Checked = true;
-                }
-                else
-                {
-                    four.Checked = true;
-                }
-                checkin.Value = foundReservation.CheckInDate;
-                checkout.Value = foundReservation.CheckOutDate;
-                selectRoomNo.Items.Add(foundReservation.RoomNumber.ToString());
-                totalRate.Text = foundReservation.TotalPrice.ToString();
+                listBox1.SelectedIndex = 0;
+
+                LoadReservationIntoForm(foundReservation);
             }
             else
             {
@@ -576,6 +582,47 @@ namespace CAProject
             MessageBox.Show("Reservations sorted by guest name (A–Z).");
         }
 
+        private void LoadReservationIntoForm(Reservation foundReservation)
+        {
+            if (foundReservation == null || foundReservation.Guest == null)
+                return;
+
+            // Fill guest info
+            guestName.Text = foundReservation.Guest.Name;
+            guestEmail.Text = foundReservation.Guest.Email;
+            phoneNumber.Text = foundReservation.Guest.PhoneNumber;
+            address.Text = foundReservation.Guest.Address;
+
+            // Guests radio buttons
+            one.Checked = foundReservation.TotalNoOfGuests == 1;
+            two.Checked = foundReservation.TotalNoOfGuests == 2;
+            three.Checked = foundReservation.TotalNoOfGuests == 3;
+            four.Checked = foundReservation.TotalNoOfGuests == 4;
+
+            // Dates
+            checkin.Value = foundReservation.CheckInDate;
+            checkout.Value = foundReservation.CheckOutDate;
+
+            // Room
+            selectRoomNo.Items.Clear();
+            selectRoomNo.Items.Add(foundReservation.RoomNumber.ToString());
+            selectRoomNo.SelectedIndex = 0;
+
+            // Price
+            totalRate.Text = foundReservation.TotalPrice.ToString("0.00");
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedItem == null)
+                return;
+
+            if (listBox1.SelectedItem is Reservation selectedReservation)
+            {
+                LoadReservationIntoForm(selectedReservation);
+            }
+        }
+
         // Clear form inputs
         private void clearSearchButton_Click(object sender, EventArgs e)
         {
@@ -605,6 +652,11 @@ namespace CAProject
             totalRate.Text = string.Empty;
             listBox1.Items.Clear();
             selectRoomNo.Items.Clear();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

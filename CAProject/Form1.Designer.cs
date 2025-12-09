@@ -459,6 +459,7 @@
             this.Controls.Add(this.label1);
             this.Name = "Form1";
             this.Text = "Hotel Reservation System";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
