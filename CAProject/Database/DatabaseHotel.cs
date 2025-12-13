@@ -10,22 +10,27 @@ namespace CAProject.Database
 {
     public static class DatabaseHotel
     {
-
+        // Path to the SQLite database file  CAProject\bin\x64\Debug
         private static readonly string DbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reservationsystem.db");
+
 
         public static void Initialize()
         {
+            // Ensure the database directory exist
             Directory.CreateDirectory(Path.GetDirectoryName(DbFile));
 
+            // Create SQLite database connection
             using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
             {
-               
+                // Create database file if it does not exist
                 connection.Open();
+
+                // Create Guests table
                 using (var tableCmd = connection.CreateCommand())
                 {
                     tableCmd.CommandText = @"
                         CREATE TABLE IF NOT EXISTS Guests (
-                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            GuestID INTEGER PRIMARY KEY AUTOINCREMENT,
                             Name TEXT NOT NULL,
                             Email TEXT NOT NULL,
                             PhoneNumber TEXT NOT NULL,
@@ -38,6 +43,8 @@ namespace CAProject.Database
             using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
             {
                 connection.Open();
+
+                // Create Rooms table
                 using (var tableCmd = connection.CreateCommand())
                 {
                     tableCmd.CommandText = @"
@@ -52,10 +59,44 @@ namespace CAProject.Database
                 }
             }
 
+            //Insert initial data into Rooms table
+            using (var connection = new SQLiteConnection("Data Source=reservationsystem.db"))
+            {
+                connection.Open();
+                var cmd = connection.CreateCommand();
+
+                cmd.CommandText = @"
+                    INSERT OR IGNORE INTO Rooms 
+                    (RoomNumber, RoomType, PricePerNight, Capacity) VALUES
+
+                    (101, 'Single Room', 100, 1),
+                    (104, 'Single Room', 100, 1),
+                    (203, 'Single Room', 100, 1),
+                    (207, 'Single Room', 100, 1),
+
+                    (102, 'Double Room', 150, 2),
+                    (105, 'Double Room', 150, 2),
+                    (204, 'Double Room', 150, 2),
+                    (205, 'Double Room', 150, 2),
+
+                    (103, 'Triple Room', 180, 3),
+                    (107, 'Triple Room', 180, 3),
+                    (201, 'Triple Room', 180, 3),
+                    (206, 'Triple Room', 180, 3),
+
+                    (106, 'Family Room', 250, 4),
+                    (202, 'Family Room', 250, 4);
+                ";
+
+                cmd.ExecuteNonQuery();
+            }
+
             using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
             {
                
                 connection.Open();
+
+                // Create Reservations table
                 using (var tableCmd = connection.CreateCommand())
                 {
                     tableCmd.CommandText = @"
@@ -67,7 +108,7 @@ namespace CAProject.Database
                             CheckOutDate DATE NOT NULL,
                             TotalNoOfGuests INTEGER NOT NULL,
                             TotalPrice REAL NOT NULL,
-                            FOREIGN KEY(GuestID) REFERENCES Guests(Id),
+                            FOREIGN KEY(GuestID) REFERENCES Guests(GuestID),
                             CHECK (CheckOutDate > CheckInDate)
                     )";
                     tableCmd.ExecuteNonQuery();
@@ -77,6 +118,8 @@ namespace CAProject.Database
             using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
             {
                 connection.Open();
+
+                // Create Users table
                 using (var tableCmd = connection.CreateCommand())
                 {
                     tableCmd.CommandText = @"
@@ -88,14 +131,25 @@ namespace CAProject.Database
                     tableCmd.ExecuteNonQuery();
                 }
             }
+
+            // For demonstration purposes, add a default user if none exist
+            using (var conn = new SQLiteConnection("Data Source=reservationsystem.db"))
+            {
+                conn.Open();
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "INSERT OR IGNORE INTO Users (Username, Password) VALUES ('admin', 'password')";
+                cmd.ExecuteNonQuery();
+            }
         }
 
+        // Add a new guest and return the generated GuestID
         public static int AddGuest(Guest guest)
         {
             using (var connection = new SQLiteConnection($"Data Source={DbFile}"))
             {   
                 connection.Open();
 
+                // Insert guest infomation
                 using (var insertCmd = connection.CreateCommand())
                 {
                     insertCmd.CommandText = "INSERT INTO Guests (Name, Email, PhoneNumber, Address) VALUES ($name, $email, $phone, $address)";
@@ -115,73 +169,17 @@ namespace CAProject.Database
             }
         }
 
-        //}
-        //public static List<Room> GetRoomsByType(string roomType)
-        //{
-        //    var rooms = new List<Room>();
-
-        //    using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
-        //    {
-        //        connection.Open();
-        //        using (var cmd = connection.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"
-        //        SELECT RoomNumber, RoomType, PricePerNight, Capacity, IsAvailable 
-        //        FROM Rooms 
-        //        WHERE RoomType = @type AND IsAvailable = 1";
-
-        //            cmd.Parameters.AddWithValue("@type", roomType);
-
-        //            using (var reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    int number = reader.GetInt32(0);
-        //                    string type = reader.GetString(1);
-        //                    decimal price = reader.GetDecimal(2);
-        //                    int capacity = reader.GetInt32(3);
-        //                    bool available = reader.GetInt32(4) == 1;
-
-        //                    Room room = null;
-
-        //                    switch (type)
-        //                    {
-        //                        case "Single Room":
-        //                            room = new SingleRoom(number, price, available, capacity);
-        //                            break;
-
-        //                        case "Double Room":
-        //                            room = new DoubleRoom(number, price, available, capacity);
-        //                            break;
-
-        //                        case "Triple Room":
-        //                            room = new TripleRoom(number, price, available, capacity);
-        //                            break;
-
-        //                        case "Family Room":
-        //                            room = new FamilyRoom(number, price, available, capacity);
-        //                            break;
-        //                    }
-
-        //                    if (room != null)
-        //                        rooms.Add(room);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return rooms;
-        //}
-
+        // Get available rooms by type and date range between check-in and check-out
         public static List<Room> GetAvailableRoomsByTypeAndDate(string roomType, DateTime checkIn, DateTime checkOut)
         {
             var rooms = new List<Room>();
 
-            using (var conn = new SQLiteConnection("Data Source=reservationsystem.db"))
+            using (var connection = new SQLiteConnection("Data Source=reservationsystem.db"))
             {
-                conn.Open();
+                connection.Open();
 
-                var cmd = conn.CreateCommand();
+                // Query to find available rooms of the specified type
+                var cmd = connection.CreateCommand();
                 cmd.CommandText = @"
                     SELECT r.RoomNumber, r.RoomType, r.PricePerNight, r.Capacity
                     FROM Rooms r
@@ -196,12 +194,16 @@ namespace CAProject.Database
                     );
                 ";
 
+                // Add parameters to prevent SQL injection
                 cmd.Parameters.AddWithValue("@type", roomType);
                 cmd.Parameters.AddWithValue("@checkIn", checkIn);
                 cmd.Parameters.AddWithValue("@checkOut", checkOut);
 
+                // Execute the query and read the results
                 using (var reader = cmd.ExecuteReader())
                 {
+
+                    // Map database rows to Room objects
                     while (reader.Read())
                     {
                         int number = reader.GetInt32(0);
@@ -228,21 +230,25 @@ namespace CAProject.Database
                             room = new FamilyRoom(number, price, true, capacity);
                         }
 
+                        // Add the room to the list if it was created successfully
                         if (room != null)
                             rooms.Add(room);
                     }
                 }
             }
 
+            // Return the list of available rooms
             return rooms;
         }
 
+        // Add a new reservation
         public static void AddReservation(Reservation reservation)
         {
             using (var connection = new SQLiteConnection($"Data Source={DbFile}"))
             {
                 connection.Open();
 
+                // Insert reservation information
                 using (var insertCmd = connection.CreateCommand())
                 {
                     insertCmd.CommandText = "INSERT INTO Reservations (GuestId, RoomNumber, CheckInDate, CheckOutDate, TotalNoOfGuests, TotalPrice) VALUES ($guestid, $roomnumber, $checkindate, $checkoutdate, $totalnoofguests, $totalprice)";
@@ -259,6 +265,7 @@ namespace CAProject.Database
             }
         }
 
+        // Get all reservations with guest details
         public static List<Reservation> GetAllReservations()
         {
             var reservations = new List<Reservation>();
@@ -267,6 +274,7 @@ namespace CAProject.Database
             {
                 connection.Open();
 
+                // Query to get all reservations with guest details
                 using (var selectCmd = connection.CreateCommand())
                 {
                     selectCmd.CommandText = @"
@@ -283,12 +291,14 @@ namespace CAProject.Database
                             G.PhoneNumber,
                             G.Address
                             FROM Reservations R
-                            JOIN Guests G ON R.GuestID = G.Id";
+                            JOIN Guests G ON R.GuestID = G.GuestID";
 
+                    // Execute the query and read the results
                     using (var reader = selectCmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
+                            // Map guest details
                             var guest = new Guest
                             {
                                 GuestID = Convert.ToInt32(reader["GuestID"]),
@@ -298,19 +308,16 @@ namespace CAProject.Database
                                 Address = reader["Address"].ToString()
                             };
 
+                            // Map reservation details
                             var reservationId = Convert.ToInt32(reader["ReservationID"]);
                             var guestId = Convert.ToInt32(reader["GuestID"]);
-                            var roomNumber = Convert.ToInt32(reader["RoomNumber"]);
-
-                            // Dates stored as DATE — safely parse
+                            var roomNumber = Convert.ToInt32(reader["RoomNumber"]);                           
                             var checkInDate = reader.GetDateTime(reader.GetOrdinal("CheckInDate"));
                             var checkOutDate = reader.GetDateTime(reader.GetOrdinal("CheckOutDate"));
-
-                            var totalGuests = Convert.ToInt32(reader["TotalNoOfGuests"]);
-
-                            // REAL → decimal or double (decimal is better for money)
+                            var totalGuests = Convert.ToInt32(reader["TotalNoOfGuests"]);                      
                             var totalPrice = Convert.ToDecimal(reader["TotalPrice"]);
 
+                            // Create Reservation object
                             var reservation = new Reservation(
                                 guest: guest,
                                 roomNumber: Convert.ToInt32(reader["RoomNumber"]),
@@ -320,32 +327,39 @@ namespace CAProject.Database
                                 totalPrice: Convert.ToDecimal(reader["TotalPrice"])
                             )
                             {
+                                // Set the ReservationID and GuestId
                                 ReservationID = reservationId,
                                 GuestId = guestId
                             };
 
+                            // Add to the list
                             reservations.Add(reservation);
                         }
                     }
                 }
             }
 
+            // Return the list of reservations
             return reservations;
         }
 
+        // Delete a reservation by ID
         public static void DeleteReservation(int reservationId)
         {
             using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
             {
                 connection.Open();
 
+                // Delete reservation
                 using (var deleteCmd = connection.CreateCommand())
                 {
                     deleteCmd.CommandText = "DELETE FROM Reservations WHERE ReservationID = @id";
                     deleteCmd.Parameters.AddWithValue("@id", reservationId);
 
+                    // Execute the delete command
                     int rowsAffected = deleteCmd.ExecuteNonQuery();
 
+                    // Check if any row was deleted and return message
                     if (rowsAffected > 0)
                     {
                         Console.WriteLine($"Reservation {reservationId} deleted successfully.");
@@ -358,12 +372,14 @@ namespace CAProject.Database
             }
         }
 
+        // Update guest information
         public static void UpdateGuest(Guest guest)
         {
             using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
             {
                 connection.Open();
 
+                // Update guest information
                 using (var updateCmd = connection.CreateCommand())
                 {
                     updateCmd.CommandText = @"
@@ -373,9 +389,10 @@ namespace CAProject.Database
                             Email = @email,
                             PhoneNumber = @phone,
                             Address = @address
-                        WHERE Id = @id
+                        WHERE GuestID = @id
                     ";
 
+                    // Set parameters
                     updateCmd.Parameters.AddWithValue("@name", guest.Name);
                     updateCmd.Parameters.AddWithValue("@email", guest.Email);
                     updateCmd.Parameters.AddWithValue("@phone", guest.PhoneNumber);
@@ -383,8 +400,10 @@ namespace CAProject.Database
 
                     updateCmd.Parameters.AddWithValue("@id", guest.GuestID);
 
+                    // Execute the update command
                     int rowsAffected = updateCmd.ExecuteNonQuery();
 
+                    // Check if any row was updated and return message
                     if (rowsAffected > 0)
                     {
                         Console.WriteLine($"Guest {guest.GuestID} updated successfully.");
@@ -397,12 +416,14 @@ namespace CAProject.Database
             }
         }
 
+        // Update reservation information
         public static void UpdateReservation(Reservation reservation)
         {
             using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
             {
                 connection.Open();
 
+                // Update reservation information
                 using (var updateCmd = connection.CreateCommand())
                 {
                     updateCmd.CommandText = @"
@@ -417,6 +438,7 @@ namespace CAProject.Database
                         WHERE ReservationID = @reservationId
                     ";
 
+                    // Set parameters
                     updateCmd.Parameters.AddWithValue("@guestId", reservation.GuestId);
                     updateCmd.Parameters.AddWithValue("@roomNumber", reservation.RoomNumber);
                     var checkInParam = updateCmd.Parameters.Add("@checkInDate", System.Data.DbType.Date);
@@ -428,8 +450,10 @@ namespace CAProject.Database
 
                     updateCmd.Parameters.AddWithValue("@reservationId", reservation.ReservationID);
 
+                    // Execute the update command
                     int rowsAffected = updateCmd.ExecuteNonQuery();
 
+                    // Check if any row was updated and return message
                     if (rowsAffected > 0)
                     {
                         Console.WriteLine($"Reservation {reservation.ReservationID} updated successfully.");
@@ -441,12 +465,15 @@ namespace CAProject.Database
                 }
             }
         }
+
+        // Validate user credentials
         public static bool ValidateUser(string username, string password)
         {
             using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
             {
                 connection.Open();
 
+                // Check if the username and password exist in the Users table
                 using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandText = @"
@@ -455,10 +482,13 @@ namespace CAProject.Database
                         WHERE Username = @username 
                         AND Password = @password";
 
+                    // Set parameters
                     cmd.Parameters.AddWithValue("@username", username);
                     cmd.Parameters.AddWithValue("@password", password);
 
                     int result = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    // Return true if a matching user is found
                     return result > 0;
                 }
             }

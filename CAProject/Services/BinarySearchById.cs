@@ -8,9 +8,12 @@ namespace CAProject.Services
 {
     public class BinarySearchById
     {
-        public Reservation BinarySearch(List<Reservation> sortedList, int id)
+        public static Reservation BinarySearch(List<Reservation> sortedList, int id)
         {
+            // Define the search boundaries
             int left = 0, right = sortedList.Count - 1;
+
+            // Standard binary search algorithm
             while (left <= right)
             {
                 int mid = left + (right - left) / 2;
@@ -21,6 +24,7 @@ namespace CAProject.Services
                 else
                     right = mid - 1;
             }
+            // If not found, return null
             return null;
         }
 

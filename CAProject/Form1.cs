@@ -20,54 +20,21 @@ namespace CAProject
 
         public Form1()
         {
+            // Initialize form components
             InitializeComponent();
 
             // Initialize the database connection
             DatabaseHotel.Initialize();
 
-            //Create Rooms table and insert initial data
-            //using (var conn = new SQLiteConnection("Data Source=reservationsystem.db"))
-            //{
-            //    conn.Open();
-            //    var cmd = conn.CreateCommand();
-
-            //    cmd.CommandText = @"
-            //        INSERT OR IGNORE INTO Rooms 
-            //        (RoomNumber, RoomType, PricePerNight, Capacity) VALUES
-
-            //        (101, 'Single Room', 100, 1),
-            //        (104, 'Single Room', 100, 1),
-            //        (203, 'Single Room', 100, 1),
-            //        (207, 'Single Room', 100, 1),
-
-            //        (102, 'Double Room', 150, 2),
-            //        (105, 'Double Room', 150, 2),
-            //        (204, 'Double Room', 150, 2),
-            //        (205, 'Double Room', 150, 2),
-
-            //        (103, 'Triple Room', 180, 3),
-            //        (107, 'Triple Room', 180, 3),
-            //        (201, 'Triple Room', 180, 3),
-            //        (206, 'Triple Room', 180, 3),
-
-            //        (106, 'Family Room', 250, 4),
-            //        (202, 'Family Room', 250, 4);
-            //    ";
-
-            //    cmd.ExecuteNonQuery();
-            //}
-
-            roomType.SelectedItemChanged += roomType_SelectedItemChanged;
-
             selectRoomNo.SelectedIndexChanged += (s, e) => UpdateTotalPrice();
             checkin.ValueChanged += (s, e) => UpdateTotalPrice();
             checkout.ValueChanged += (s, e) => UpdateTotalPrice();
 
-            listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
-
         }
 
+        //--------------------------------------------------------------------------
         // Create Reservation
+        //--------------------------------------------------------------------------
         private void createReservationButton_Click(object sender, EventArgs e)  
         {
             //Validate form inputs
@@ -86,26 +53,25 @@ namespace CAProject
 
             // Get selected room type and number
             Room selectedRoom = (Room)selectRoomNo.SelectedItem;
-            //string selectedRoomType = roomType.SelectedItem.ToString();
-            //string selectedRoomNumber = selectRoomNo.SelectedItem.ToString();
-            //int roomNumber = int.Parse(selectedRoomNumber);
 
+            // Check room capacity vs number of guests and show error if exceeded
             if (noOfGuests > selectedRoom.Capacity)
             {
                 MessageBox.Show("Too many guests for this room type.");
                 return;
             }
 
-            // Get total rate
+            // Get total rate based on room price and number of nights
             int nights = (checkOut - checkIn).Days;
             decimal totalPrice = ((Room)selectRoomNo.SelectedItem).PricePerNight * nights;
 
-            // Create Guest object
+            // Get guest details from form
             string name = guestName.Text;
             string email = guestEmail.Text;
             string phone = phoneNumber.Text;
             string addr = address.Text;
 
+            // Create Guest object
             Guest newGuest = new Guest(name, email, phone, addr);
 
             // Add guest to database and get assigned GuestID
@@ -116,61 +82,64 @@ namespace CAProject
             Reservation newReservation = new Reservation(newGuest, selectedRoom.RoomNumber, checkIn, checkOut, noOfGuests, totalPrice);
             DatabaseHotel.AddReservation(newReservation);
 
+            listBox1.Items.Clear();
             //Show reservation details in ListBox
-            listBox1.Items.Add($"Reservation created for {newGuest.Name} with {noOfGuests} guests in room number {selectedRoom.RoomNumber} from {checkIn.ToShortDateString()} to {checkOut.ToShortDateString()}. Total Rate: €{totalPrice}");
+            listBox1.Items.Add($"Reservation created for {newGuest.Name} with {noOfGuests} guest(s) in room number {selectedRoom.RoomNumber} from {checkIn.ToShortDateString()} to {checkOut.ToShortDateString()}. Total Rate: €{totalPrice}");
 
             MessageBox.Show("Reservation created successfully!");
         }
 
-        // Update room numbers based on selected room type
-        //private void UpdateRoomNumbers()
-        //{
-        //    if (roomType.SelectedItem == null)
-        //        return;
-
-        //    string selectedType = roomType.SelectedItem.ToString();
-
-        //    selectRoomNo.Items.Clear();
-
-        //    var rooms = DatabaseHotel.GetRoomsByType(selectedType);
-
-        //    foreach (var room in rooms)
-        //    {
-        //        selectRoomNo.Items.Add(room.ToString());
-        //    }
-        //}
-        //private List<Room> currentRooms = new List<Room>();
-
+        //--------------------------------------------------------------------------
+        // Update available room numbers based on selected type and dates
+        //--------------------------------------------------------------------------
         private void UpdateRoomNumbers()
         {
+            // No room type selected -> clear
             if (roomType.SelectedItem == null)
                 return;
 
+            // Get selected type and dates
             string selectedType = roomType.SelectedItem.ToString();
 
             DateTime checkInDate = checkin.Value.Date;
             DateTime checkOutDate = checkout.Value.Date;
 
+            // Check-out must be after in
             if (checkOutDate <= checkInDate)
                 return;
 
+            // Clear current room numbers
             selectRoomNo.Items.Clear();
 
+            // Get available rooms from database
             currentRooms = DatabaseHotel.GetAvailableRoomsByTypeAndDate(
                 selectedType,
                 checkInDate,
                 checkOutDate
             );
 
+            // Populate room numbers list box
             foreach (var room in currentRooms)
                 selectRoomNo.Items.Add(room);
 
+            // Select first room by default if any available otherwise show message
             if (selectRoomNo.Items.Count > 0)
                 selectRoomNo.SelectedIndex = 0;
             else
                 MessageBox.Show("No rooms available for these dates.");
         }
 
+        //--------------------------------------------------------------------------
+        // Update room numbers list box when room type changes
+        //--------------------------------------------------------------------------
+        private void roomType_SelectedItemChanged(object sender, EventArgs e)
+        {
+            UpdateRoomNumbers();
+        }
+
+        //--------------------------------------------------------------------------
+        // Update total price when room or dates change
+        //--------------------------------------------------------------------------
         private void UpdateTotalPrice()
         {
             // No room selected -> clear
@@ -180,7 +149,7 @@ namespace CAProject
                 return;
             }
 
-            // Cast to Room
+            // Get selected room
             var selectedRoom = selectRoomNo.SelectedItem as Room;
             if (selectedRoom == null)
             {
@@ -188,17 +157,18 @@ namespace CAProject
                 return;
             }
 
-            // Use .Date to ignore time-of-day
+            // Get dates
             DateTime inDate = checkin.Value.Date;
             DateTime outDate = checkout.Value.Date;
 
-            // Out must be after in
+            // Check-out must be after in
             if (outDate <= inDate)
             {
                 totalRate.Text = "";
                 return;
             }
 
+            // Calculate number of nights
             int nights = (outDate - inDate).Days;
 
             // Safety: ensure at least one night
@@ -208,65 +178,45 @@ namespace CAProject
                 return;
             }
 
+            // Calculate total price
             decimal totalPrice = selectedRoom.PricePerNight * nights;
             totalRate.Text = totalPrice.ToString("0.00");
         }
 
+        //--------------------------------------------------------------------------
         // Search reservation by ID
+        //--------------------------------------------------------------------------
         private void searchReservationButton_Click(object sender, EventArgs e)
         {
 
+            // Validate input
             if (!int.TryParse(searchReservation.Text, out int searchid))
             {
                 MessageBox.Show("Invalid reservation ID.");
                 return;
             }
 
+            // Get all reservations
             List<Reservation> reservations = DatabaseHotel.GetAllReservations();
 
+            // Sort reservations by ID using Insertion Sort
             SortReservationsById.InsertionSortByReservationID(reservations);
 
-            BinarySearchById searcher = new BinarySearchById();
-            var foundReservation = searcher.BinarySearch(reservations, searchid);
+            // Perform binary search and get result
+            var foundReservation = BinarySearchById.BinarySearch(reservations, searchid);
 
+            // Clear previous results
             listBox1.Items.Clear();
             selectRoomNo.Items.Clear();
 
+            // Display found reservation or show not found message
             if (foundReservation != null)
             {
-                if (foundReservation.Guest == null)
-                {
-                    MessageBox.Show("Guest object is NULL inside this reservation.");
-                    return;
-                }
-                //listBox1.Items.Add(foundReservation);
-                //guestName.Text = foundReservation.Guest.Name;
-                //guestEmail.Text = foundReservation.Guest.Email;
-                //phoneNumber.Text = foundReservation.Guest.PhoneNumber;
-                //address.Text = foundReservation.Guest.Address;
-                //if (foundReservation.TotalNoOfGuests == 1)
-                //{
-                //    one.Checked = true;
-                //}
-                //else if (foundReservation.TotalNoOfGuests == 2)
-                //{
-                //    two.Checked = true;
-                //}
-                //else if (foundReservation.TotalNoOfGuests == 3)
-                //{
-                //    three.Checked = true;
-                //}
-                //else
-                //{
-                //    four.Checked = true;
-                //}
-                //checkin.Value = foundReservation.CheckInDate;
-                //checkout.Value = foundReservation.CheckOutDate;
-                //selectRoomNo.Items.Add(foundReservation.RoomNumber.ToString());
-                //totalRate.Text = foundReservation.TotalPrice.ToString();\
+                // Add to ListBox and select
                 listBox1.Items.Add(foundReservation);
                 listBox1.SelectedIndex = 0;
 
+                // Load details into form
                 LoadReservationIntoForm(foundReservation);
             }
             else
@@ -275,7 +225,9 @@ namespace CAProject
             }
         }
 
+        //--------------------------------------------------------------------------
         // Delete reservation
+        //--------------------------------------------------------------------------
         private void deleteReservationButton_Click(object sender, EventArgs e)
         {
             // Check if something is selected
@@ -285,10 +237,10 @@ namespace CAProject
                 return;
             }
 
-            // Cast the selected item to Reservation
+            // Cast selected reservation
             var selectedReservation = (Reservation)listBox1.SelectedItem;
 
-            // Optional: ask for confirmation
+            // Ask for confirmation
             var result = MessageBox.Show(
                 $"Are you sure you want to delete Reservation ID {selectedReservation.ReservationID}?",
                 "Confirm Delete",
@@ -296,35 +248,34 @@ namespace CAProject
                 MessageBoxIcon.Warning
             );
 
+            // If confirmed, delete
             if (result == DialogResult.Yes)
             {
-                // Call your delete method
+                // Call delete method
                 DatabaseHotel.DeleteReservation(selectedReservation.ReservationID);
 
                 // Remove it from the ListBox
                 listBox1.Items.Remove(selectedReservation);
 
+                // Show success message
                 MessageBox.Show("Reservation deleted successfully.");
             }
 
         }
 
-        // Update room numbers list box when room type changes
-        private void roomType_SelectedItemChanged(object sender, EventArgs e)
-        {
-            UpdateRoomNumbers();
-        }
-
+        //--------------------------------------------------------------------------
         // Update reservation
+        //--------------------------------------------------------------------------
         private void updateReservationButton_Click(object sender, EventArgs e)
         {
-            // Ensure something was searched and loaded
+            // Check if something is selected
             if (listBox1.SelectedItem == null)
             {
                 MessageBox.Show("Please search and select a reservation to update.");
                 return;
             }
 
+            // Validate form inputs
             if (!ValidateForm())
                 return;
 
@@ -340,22 +291,22 @@ namespace CAProject
             // Update guest in database
             DatabaseHotel.UpdateGuest(selectedReservation.Guest);
 
-            // Update Reservation object
-
-            // Guest count
+            // Get number of guests
             int noOfGuests = one.Checked ? 1 :
                              two.Checked ? 2 :
                              three.Checked ? 3 : 4;
 
+            // Get selected room
             Room selectedRoom = (Room)selectRoomNo.SelectedItem;
 
-            // Room number
+            // Check room capacity vs number of guests
             if (noOfGuests > selectedRoom.Capacity)
             {
                 MessageBox.Show("Too many guests for this room.");
                 return;
             }
 
+            // Update reservation details
             selectedReservation.RoomNumber = selectedRoom.RoomNumber;
             selectedReservation.TotalNoOfGuests = noOfGuests;
             selectedReservation.CheckInDate = checkin.Value;
@@ -367,8 +318,10 @@ namespace CAProject
             selectedReservation.TotalPrice = newPrice;
             totalRate.Text = newPrice.ToString();
 
+            // Update reservation in database
             DatabaseHotel.UpdateReservation(selectedReservation);
 
+            // Show success message
             MessageBox.Show("Reservation updated successfully.");
 
             // Refresh ListBox display
@@ -376,11 +329,15 @@ namespace CAProject
             listBox1.Items.Add(selectedReservation);
         }
 
+        //--------------------------------------------------------------------------
         // Form validation method
+        //--------------------------------------------------------------------------
         private bool ValidateForm()
         {
+            // Name validation: at least first and last name with min 3 letters each
             string namePattern = @"^[A-Za-z]{3,}(?: [A-Za-z]{3,})+$";
 
+            // Trim whitespace and validate
             if (!Regex.IsMatch(guestName.Text.Trim(), namePattern))
             {
                 errorProvider1.SetError(
@@ -394,8 +351,10 @@ namespace CAProject
                 errorProvider1.SetError(guestName, "");
             }
 
+            // Email validation: characters before and after @, valid domain, 2 characters after dot
             string emailPattern = @"^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$";
 
+            // Trim whitespace and validate
             if (!Regex.IsMatch(guestEmail.Text.Trim(), emailPattern))
             {
                 errorProvider1.SetError(
@@ -409,13 +368,14 @@ namespace CAProject
                 errorProvider1.SetError(guestEmail, "");
             }
 
+            // Phone number validation: + country code (1-3 digits) space number (8-15 digits)
             string phoneNumberPattern = @"^\+\d{1,3} \d{8,15}$";
 
             if (!Regex.IsMatch(phoneNumber.Text.Trim(), phoneNumberPattern))
             {
                 errorProvider1.SetError(
                     phoneNumber,
-                    "Phone format must be: +CCC NNNNNNNN (e.g. +353 875570000)"
+                    "Phone format must be: '+' country code (1-3 digits) 'space' number (8-15 digits) (e.g. +353 875570000)"
                 );
                 return false;
             }
@@ -424,6 +384,7 @@ namespace CAProject
                 errorProvider1.SetError(phoneNumber, "");
             }
 
+            // Address validation: letters, numbers, spaces, commas, hyphens
             string addressPattern = @"^[A-Za-z0-9 ,\-]+$";
 
             if (string.IsNullOrWhiteSpace(address.Text) ||
@@ -440,15 +401,18 @@ namespace CAProject
                 errorProvider1.SetError(address, "");
             }
 
+            // Validate other controls
             if (!ValidateChildren())
                 return false;
 
+            // Room type selected
             if (roomType.SelectedItem == null)
             {
                 MessageBox.Show("Please select a room type.");
                 return false;
             }
 
+            // Room number selected
             if (!(selectRoomNo.SelectedItem is Room selectedRoom))
             {
                 MessageBox.Show("Please select a valid room.");
@@ -460,6 +424,7 @@ namespace CAProject
                 two.Checked ? 2 :
                 three.Checked ? 3 : 4;
 
+            // Check room capacity vs number of guests
             if (noOfGuests > selectedRoom.Capacity)
             {
                 MessageBox.Show(
@@ -471,6 +436,7 @@ namespace CAProject
                 return false;
             }
 
+            // Esnure check-out is after check-in
             if (checkout.Value <= checkin.Value)
             {
                 MessageBox.Show("Check-out must be after check-in.");
@@ -484,12 +450,14 @@ namespace CAProject
                 return false;
             }
 
+            // Prevent creating reservations with check-out in the past
             if (checkout.Value < DateTime.Today)
             {
                 MessageBox.Show("Check-out date cannot be in the past.");
                 return false;
             }
 
+            // Validate total rate is a valid decimal
             if (!decimal.TryParse(totalRate.Text, out _))
             {
                 MessageBox.Show("Invalid total rate.");
@@ -499,19 +467,17 @@ namespace CAProject
             return true;
         }
 
-        // Close application
-        private void closeButton_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
+        //--------------------------------------------------------------------------
         // List all reservations
+        //--------------------------------------------------------------------------
         private void listAllReservationsButton_Click(object sender, EventArgs e)
         {
+            // Get all reservations
             List<Reservation> reservations = DatabaseHotel.GetAllReservations();
 
             listBox1.Items.Clear();
 
+            // Safety check
             if (reservations == null || reservations.Count == 0)
             {
                 MessageBox.Show("No reservations found.");
@@ -520,16 +486,20 @@ namespace CAProject
 
             listBox1.Items.Clear();
 
+            // Display all reservations
             foreach (var reservation in reservations)
             {
                 listBox1.Items.Add(reservation);
             }
 
+            // Show success message
             MessageBox.Show("All reservations loaded successfully.");
 
         }
 
+        //--------------------------------------------------------------------------
         // Sort reservations by check-in date
+        //--------------------------------------------------------------------------
         private void sortByCheckInButton_Click(object sender, EventArgs e)
         {
             // Get all reservations
@@ -542,21 +512,25 @@ namespace CAProject
                 return;
             }
 
-            // ✅ APPLY INSERTION SORT BY CHECK-IN DATE
-            SortReservationsByDate.InsertionSortByCheckInDate(reservations);
+            // Apply Insertion Sort
+            SortReservationsByDate.MergeSortByCheckInDate(reservations);
 
             // Refresh ListBox
             listBox1.Items.Clear();
 
+            // Display sorted reservations
             foreach (var reservation in reservations)
             {
                 listBox1.Items.Add(reservation);
             }
 
+            // Show success message
             MessageBox.Show("Reservations sorted by check-in date.");
         }
 
+        //--------------------------------------------------------------------------
         // Sort reservations by name
+        //--------------------------------------------------------------------------
         private void sortByNameButton_Click(object sender, EventArgs e)
         {
             // Get all reservations
@@ -569,19 +543,25 @@ namespace CAProject
                 return;
             }
 
-            // ✅ Apply Bubble Sort
+            // Apply Bubble Sort
             SortReservationsByName.BubbleSortByGuestName(reservations);
 
             // Refresh ListBox
             listBox1.Items.Clear();
+
+            // Display sorted reservations
             foreach (var reservation in reservations)
             {
                 listBox1.Items.Add(reservation);
             }
 
+            // Show success message
             MessageBox.Show("Reservations sorted by guest name (A–Z).");
         }
 
+        //--------------------------------------------------------------------------
+        // Load reservation details into form
+        //--------------------------------------------------------------------------
         private void LoadReservationIntoForm(Reservation foundReservation)
         {
             if (foundReservation == null || foundReservation.Guest == null)
@@ -612,6 +592,9 @@ namespace CAProject
             totalRate.Text = foundReservation.TotalPrice.ToString("0.00");
         }
 
+        //--------------------------------------------------------------------------
+        // Load reservation details when selected in ListBox
+        //--------------------------------------------------------------------------
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listBox1.SelectedItem == null)
@@ -623,7 +606,9 @@ namespace CAProject
             }
         }
 
+        //--------------------------------------------------------------------------
         // Clear form inputs
+        //--------------------------------------------------------------------------
         private void clearSearchButton_Click(object sender, EventArgs e)
         {
             guestName.Text = string.Empty;
@@ -636,9 +621,13 @@ namespace CAProject
             roomType.SelectedItem = null;
             totalRate.Text = string.Empty;
             listBox1.Items.Clear();
+            searchReservation.Text = string.Empty;
             selectRoomNo.Items.Clear();
         }
 
+        //--------------------------------------------------------------------------
+        // Clear form inputs
+        //--------------------------------------------------------------------------
         private void clearForm_Click(object sender, EventArgs e)
         {
             guestName.Text = string.Empty;
@@ -654,7 +643,18 @@ namespace CAProject
             selectRoomNo.Items.Clear();
         }
 
+        //--------------------------------------------------------------------------
+        // Exit application on form close
+        //--------------------------------------------------------------------------
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
+
+        //--------------------------------------------------------------------------
+        // Close application when close button clicked
+        //--------------------------------------------------------------------------
+        private void closeButton_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
