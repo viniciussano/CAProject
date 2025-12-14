@@ -9,25 +9,27 @@ namespace CAProject
     public class Reservation
     {
         public int ReservationID { get; set; }
-        public Room ReservedRoom { get; set; }
+        public int GuestId { get; set; }
+        public int RoomNumber { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
-        public Guest GuestName { get; set; }
         public int TotalNoOfGuests { get; set; }
         public decimal TotalPrice { get; set; }
-        public Reservation(int reservationID, Room reservedRoom, DateTime checkInDate, DateTime checkOutDate, Guest guestName, int totalNoOfGuests, decimal totalPrice)
+        public Guest Guest { get; set; }
+
+        public Reservation(Guest guest, int roomNumber, DateTime checkInDate, DateTime checkOutDate, int totalNoOfGuests, decimal totalPrice)
         {
-            ReservationID = reservationID;
-            ReservedRoom = reservedRoom;
+            Guest = guest;
+            GuestId = guest.Id;
+            RoomNumber = roomNumber;
             CheckInDate = checkInDate;
             CheckOutDate = checkOutDate;
-            GuestName = guestName;
             TotalNoOfGuests = totalNoOfGuests;
             TotalPrice = totalPrice;
         }
         public override string ToString()
         {
-            return $"Reservation ID: {ReservationID}, Guest: {GuestName}, Room: {ReservedRoom.GetRoomType()} (#{ReservedRoom.RoomNumber}), Check-In: {CheckInDate.ToShortDateString()}, Check-Out: {CheckOutDate.ToShortDateString()}";
+            return $"Reservation ID: {ReservationID}, GuestID: {GuestId}, Guest Name: {Guest.Name} Room: {RoomNumber}, Check-In: {CheckInDate.ToShortDateString()}, Check-Out: {CheckOutDate.ToShortDateString()}, Total Number of Guests: {TotalNoOfGuests}, Total Price: {TotalPrice}";
         }
     }
 }
