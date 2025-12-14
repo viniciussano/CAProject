@@ -64,8 +64,8 @@ The SQLite database will be created automatically on first run.
 When the application starts, a login window will appear.
 
 Use the following **demo credentials**:
-username: admin  
-password: password
+- username: admin  
+- password: password
 
 ---
 
