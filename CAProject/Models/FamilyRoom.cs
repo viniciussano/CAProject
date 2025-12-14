@@ -14,7 +14,7 @@ namespace CAProject
         }
         public override string GetRoomType()
         {
-            return "Single Room";
+            return "Family Room";
         }
     }
 }

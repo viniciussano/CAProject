@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CAProject.Services
 {
-    internal class SortReservationsById
+    public class SortReservationsById
     {
         public static void InsertionSortByReservationID(List<Reservation> list)
         {
