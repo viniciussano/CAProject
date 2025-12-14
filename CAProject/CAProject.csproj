@@ -109,7 +109,7 @@
     <Compile Include="Services\SortReservationsById.cs" />
     <Compile Include="Services\SortReservationsByName.cs" />
     <Compile Include="SingleRoom.cs" />
-    <Compile Include="TwinRoom.cs" />
+    <Compile Include="TripleRoom.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

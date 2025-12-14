@@ -1,7 +1,9 @@
-﻿using System;
+﻿using CAProject.Database;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,6 +17,16 @@ namespace CAProject
         public Form2()
         {
             InitializeComponent();
+            DatabaseHotel.Initialize();
+
+            //For demonstration purposes, add a default user if none exist
+            //using (var conn = new SQLiteConnection("Data Source=reservationsystem.db"))
+            //{
+            //    conn.Open();
+            //    var cmd = conn.CreateCommand();
+            //    cmd.CommandText = "INSERT INTO Users (Username, Password) VALUES ('admin', 'password')";
+            //    cmd.ExecuteNonQuery();
+            //}
         }
 
         private void exitButton_Click(object sender, EventArgs e)
@@ -24,7 +36,12 @@ namespace CAProject
 
         private void loginButton_Click(object sender, EventArgs e)
         {
-            if (usernameTextBox.Text == "admin" && passwordTextBox.Text == "password")
+            string username = usernameTextBox.Text;
+            string password = passwordTextBox.Text;
+
+            bool isValid = DatabaseHotel.ValidateUser(username, password);
+
+            if (isValid)
             {
                 MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
