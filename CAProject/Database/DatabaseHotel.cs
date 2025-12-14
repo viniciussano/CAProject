@@ -96,7 +96,7 @@ namespace CAProject.Database
                     insertCmd.CommandText = "SELECT last_insert_rowid();";
                     int id = Convert.ToInt32(insertCmd.ExecuteScalar());
 
-                    guest.Id = id; // Optionally store it in the object
+                    guest.GuestID = id; // Optionally store it in the object
                     return id;
                 }
             }
@@ -156,7 +156,7 @@ namespace CAProject.Database
                         {
                             var guest = new Guest
                             {
-                                Id = Convert.ToInt32(reader["GuestID"]),
+                                GuestID = Convert.ToInt32(reader["GuestID"]),
                                 Name = reader["Name"].ToString(),
                                 Email = reader["Email"].ToString(),
                                 PhoneNumber = reader["PhoneNumber"].ToString(),
@@ -266,17 +266,17 @@ namespace CAProject.Database
                     updateCmd.Parameters.AddWithValue("@phone", guest.PhoneNumber);
                     updateCmd.Parameters.AddWithValue("@address", guest.Address);
 
-                    updateCmd.Parameters.AddWithValue("@id", guest.Id);
+                    updateCmd.Parameters.AddWithValue("@id", guest.GuestID);
 
                     int rowsAffected = updateCmd.ExecuteNonQuery();
 
                     if (rowsAffected > 0)
                     {
-                        Console.WriteLine($"Guest {guest.Id} updated successfully.");
+                        Console.WriteLine($"Guest {guest.GuestID} updated successfully.");
                     }
                     else
                     {
-                        Console.WriteLine($"No guest found with ID {guest.Id}.");
+                        Console.WriteLine($"No guest found with ID {guest.GuestID}.");
                     }
                 }
             }
