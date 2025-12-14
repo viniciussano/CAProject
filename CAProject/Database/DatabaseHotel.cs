@@ -52,8 +52,7 @@ namespace CAProject.Database
                             RoomNumber INTEGER PRIMARY KEY,
                             RoomType TEXT NOT NULL,
                             PricePerNight REAL NOT NULL,    
-                            Capacity INTEGER NOT NULL,
-                            IsAvailable INTEGER NOT NULL DEFAULT 1
+                            Capacity INTEGER NOT NULL
                     )";
                     tableCmd.ExecuteNonQuery();
                 }
