@@ -18,29 +18,19 @@ namespace CAProject
         {
             InitializeComponent();
             DatabaseHotel.Initialize();
-
-            //For demonstration purposes, add a default user if none exist
-            //using (var conn = new SQLiteConnection("Data Source=reservationsystem.db"))
-            //{
-            //    conn.Open();
-            //    var cmd = conn.CreateCommand();
-            //    cmd.CommandText = "INSERT INTO Users (Username, Password) VALUES ('admin', 'password')";
-            //    cmd.ExecuteNonQuery();
-            //}
         }
 
-        private void exitButton_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
+        // Login button event handler
         private void loginButton_Click(object sender, EventArgs e)
         {
+            // Retrieve username and password from text boxes
             string username = usernameTextBox.Text;
             string password = passwordTextBox.Text;
 
+            // Validate user credentials
             bool isValid = DatabaseHotel.ValidateUser(username, password);
 
+            // Show appropriate message based on validation result
             if (isValid)
             {
                 MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -54,9 +44,18 @@ namespace CAProject
             }
         }
 
+        // Show Password checkbox event handler
         private void checkBoxShowPassword_CheckedChanged(object sender, EventArgs e)
         {
+            // Toggle password visibility
             passwordTextBox.UseSystemPasswordChar = !showPasswordCheckBox.Checked;
+        }
+
+        // Exit button event handler
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            // Close the application
+            Application.Exit();
         }
     }
 }

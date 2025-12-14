@@ -85,15 +85,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\DatabaseHotel.cs" />
-    <Compile Include="DoubleRoom.cs" />
-    <Compile Include="FamilyRoom.cs" />
+    <Compile Include="Models\DoubleRoom.cs" />
+    <Compile Include="Models\FamilyRoom.cs" />
     <Compile Include="Form2.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Guest.cs" />
+    <Compile Include="Models\Guest.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,14 +102,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reservation.cs" />
-    <Compile Include="Room.cs" />
+    <Compile Include="Models\Reservation.cs" />
+    <Compile Include="Models\Room.cs" />
     <Compile Include="Services\BinarySearchById.cs" />
     <Compile Include="Services\SortReservationsByDate.cs" />
     <Compile Include="Services\SortReservationsById.cs" />
     <Compile Include="Services\SortReservationsByName.cs" />
-    <Compile Include="SingleRoom.cs" />
-    <Compile Include="TripleRoom.cs" />
+    <Compile Include="Models\SingleRoom.cs" />
+    <Compile Include="Models\TripleRoom.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

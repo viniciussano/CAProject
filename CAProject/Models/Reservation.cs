@@ -29,7 +29,8 @@ namespace CAProject
         }
         public override string ToString()
         {
-            return $"Reservation ID: {ReservationID}, GuestID: {GuestId}, Guest Name: {Guest.Name}, Room: {RoomNumber}, Check-In: {CheckInDate.ToShortDateString()}, Check-Out: {CheckOutDate.ToShortDateString()}, Total Number of Guests: {TotalNoOfGuests}, Total Price: {TotalPrice}";
+            return $"ID: {ReservationID} // Guest: {Guest.Name} // GuestID: {GuestId} // Room: {RoomNumber} // " +
+                   $"Check-In: {CheckInDate:d} // Check-Out: {CheckOutDate:d} // No of Guests: {TotalNoOfGuests} // Price: {TotalPrice:C}";
         }
     }
 }
