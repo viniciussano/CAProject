@@ -13,7 +13,7 @@ namespace CAProject.Database
         // Path to the SQLite database file  CAProject\bin\x64\Debug
         private static readonly string DbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reservationsystem.db");
 
-
+        // Initialize the database and create tables if they do not exist
         public static void Initialize()
         {
             // Ensure the database directory exist
@@ -22,7 +22,7 @@ namespace CAProject.Database
             // Create SQLite database connection
             using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
             {
-                // Create database file if it does not exist
+                // Create database file if it does not exist or open existing one
                 connection.Open();
 
                 // Create Guests table
@@ -193,7 +193,7 @@ namespace CAProject.Database
                     );
                 ";
 
-                // Add parameters to prevent SQL injection
+                // Add parameters
                 cmd.Parameters.AddWithValue("@type", roomType);
                 cmd.Parameters.AddWithValue("@checkIn", checkIn);
                 cmd.Parameters.AddWithValue("@checkOut", checkOut);
@@ -342,35 +342,6 @@ namespace CAProject.Database
             return reservations;
         }
 
-        // Delete a reservation by ID
-        public static void DeleteReservation(int reservationId)
-        {
-            using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
-            {
-                connection.Open();
-
-                // Delete reservation
-                using (var deleteCmd = connection.CreateCommand())
-                {
-                    deleteCmd.CommandText = "DELETE FROM Reservations WHERE ReservationID = @id";
-                    deleteCmd.Parameters.AddWithValue("@id", reservationId);
-
-                    // Execute the delete command
-                    int rowsAffected = deleteCmd.ExecuteNonQuery();
-
-                    // Check if any row was deleted and return message
-                    if (rowsAffected > 0)
-                    {
-                        Console.WriteLine($"Reservation {reservationId} deleted successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"No reservation found with ID {reservationId}.");
-                    }
-                }
-            }
-        }
-
         // Update guest information
         public static void UpdateGuest(Guest guest)
         {
@@ -460,6 +431,35 @@ namespace CAProject.Database
                     else
                     {
                         Console.WriteLine($"No reservation found with ID {reservation.ReservationID}.");
+                    }
+                }
+            }
+        }
+
+        // Delete a reservation by ID
+        public static void DeleteReservation(int reservationId)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={DbFile};Version=3;"))
+            {
+                connection.Open();
+
+                // Delete reservation
+                using (var deleteCmd = connection.CreateCommand())
+                {
+                    deleteCmd.CommandText = "DELETE FROM Reservations WHERE ReservationID = @id";
+                    deleteCmd.Parameters.AddWithValue("@id", reservationId);
+
+                    // Execute the delete command
+                    int rowsAffected = deleteCmd.ExecuteNonQuery();
+
+                    // Check if any row was deleted and return message
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine($"Reservation {reservationId} deleted successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"No reservation found with ID {reservationId}.");
                     }
                 }
             }

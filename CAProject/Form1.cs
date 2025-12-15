@@ -26,10 +26,6 @@ namespace CAProject
             // Initialize the database connection
             DatabaseHotel.Initialize();
 
-            selectRoomNo.SelectedIndexChanged += (s, e) => UpdateTotalPrice();
-            checkin.ValueChanged += (s, e) => UpdateTotalPrice();
-            checkout.ValueChanged += (s, e) => UpdateTotalPrice();
-
         }
 
         //--------------------------------------------------------------------------
@@ -218,19 +214,21 @@ namespace CAProject
         }
 
         //--------------------------------------------------------------------------
-        // Update room numbers list box when check-in date changes
+        // Update room numbers list box and total price when check-in date changes
         //--------------------------------------------------------------------------
         private void checkin_ValueChanged(object sender, EventArgs e)
         {
             UpdateRoomNumbers();
+            UpdateTotalPrice();
         }
 
         //--------------------------------------------------------------------------
-        // Update room numbers list box when check-out date changes
+        // Update room numbers list box and total price when check-out date changes
         //--------------------------------------------------------------------------
         private void checkout_ValueChanged(object sender, EventArgs e)
         {
             UpdateRoomNumbers();
+            UpdateTotalPrice();
         }
 
         //--------------------------------------------------------------------------
@@ -270,6 +268,14 @@ namespace CAProject
             // Calculate total price
             decimal totalPrice = selectedRoom.PricePerNight * nights;
             totalRate.Text = totalPrice.ToString("0.00");
+        }
+
+        //--------------------------------------------------------------------------
+        // Update total price when change room selection
+        //--------------------------------------------------------------------------
+        private void SelectRoomNo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateTotalPrice();
         }
 
         //--------------------------------------------------------------------------
